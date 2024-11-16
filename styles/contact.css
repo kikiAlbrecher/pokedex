@@ -1,0 +1,25 @@
+.min_height_variant {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.contact_field {
+    max-width: 1920px;
+    width: 75%;
+    padding-top: 36px;
+    padding-bottom: 36px;
+}
+
+@media (max-width: 1450px) {
+    .contact_field {
+        width: 87.5%;
+    }
+}
+
+@media (max-width: 800px) {
+    .contact_field {
+        width: 100%;
+    }
+}

@@ -1,0 +1,45 @@
+.btn_small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    background-color: rgb(203, 203, 203);
+    border-radius: 100%;
+    border: 3px solid whitesmoke;
+    color: rgb(255, 128, 0);
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.btn_small>img {
+    height: 32px;
+    width: 32px;
+}
+
+@media (max-width: 1144px) {
+    .btn_small {
+        height: 32px;
+        width: 32px;
+        margin: 12px;
+    }
+
+    .btn_small>img {
+        height: 28px;
+        width: 28px;
+    }
+}
+
+@media (max-width: 800px) {
+    .btn_small {
+        height: 24px;
+        width: 24px;
+        margin: 8px;
+    }
+
+    .btn_small>img {
+        height: 20px;
+        width: 20px;
+    }
+}
+

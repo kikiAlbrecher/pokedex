@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="assets/icons/logo.png">
+    <title>pokedex</title>
+
+    <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./styles/font_sizes.css">
+    <link rel="stylesheet" href="./styles/section_padding.css">
+    <link rel="stylesheet" href="./styles/assets.css">
+    <link rel="stylesheet" href="./styles/flex.css">
+    <link rel="stylesheet" href="./styles/min_height_max_width_of_website.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./styles/imprint_dataprivacy.css">
+    <link rel="stylesheet" href="./styles/contact.css">
+
+    <script src="./scripts/templates.js"></script>
+    <script src="./scripts/db.js"></script>
+    <script src="./script.js"></script>
+    <script src="./scripts/standard.js"></script>
+    <script src="./scripts/contact.js"></script>
+</head>
+
+<body onload="includeHTML(), init()">
+
+    <div w3-include-html="assets/templates/header.html"></div>
+
+    <div class="min_height_of_website bg_deco">
+        <div class="main m_auto display_flex_row center_flex-start">
+
+            <section class="block_style section_pad_left_right display_flex_column center_center">
+                <section class="cards_section display_flex_row center_flex-start" id="pokemon">
+                </section>
+                <div class="loading d_none" id="loading_spinner">
+                    <img class="loading_spinner" src="./assets/icons/logo.png" alt="Ladevorgang">
+                </div>
+                <button class="btn" id="load_more_btn" onclick="loadMorePokes()">Weitere Pokemons</button>
+                <div class="error_message d_none" id="error_message"></div>
+
+
+            </section>
+        </div>
+    </div>
+
+    <div w3-include-html="assets/templates/footer.html"></div>
+</body>
+
+</html>

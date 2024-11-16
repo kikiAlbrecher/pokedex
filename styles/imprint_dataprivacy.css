@@ -1,0 +1,50 @@
+.i_dp {
+    max-width: 1920px;
+    color: white !important;
+}
+
+.h2_i_dp {
+    text-align: left;
+    word-wrap: break-word;
+    color: white;
+    padding-top: 16px;
+}
+
+.h3_i_dp {
+    color: white;
+}
+
+p {
+    text-align: justify;
+    word-wrap: break-word;
+    color: white;
+}
+
+strong {
+    line-height: 150%;
+    color: white;
+}
+
+.link_i_dp {
+    color: white;
+    word-wrap: break-all;
+}
+
+li {
+    word-wrap: break-word;
+    color: white;
+}
+
+em {
+    color: white;
+}
+
+@media(max-width: 500px) {
+    .link_i_dp {
+        font-size: 14px;
+    }
+
+    ul {
+        padding-left: 16px;
+    }
+}
