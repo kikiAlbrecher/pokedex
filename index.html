@@ -10,37 +10,37 @@
     <link rel="stylesheet" href="./assets/fonts/fonts.css">
     <link rel="stylesheet" href="./styles/standard.css">
     <link rel="stylesheet" href="./styles/font_sizes.css">
-    <link rel="stylesheet" href="./styles/section_padding.css">
-    <link rel="stylesheet" href="./styles/assets.css">
-    <link rel="stylesheet" href="./styles/flex.css">
-    <link rel="stylesheet" href="./styles/min_height_max_width_of_website.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="./styles/imprint_dataprivacy.css">
-    <link rel="stylesheet" href="./styles/contact.css">
+    <link rel="stylesheet" href="./styles/responsive.css">
 
     <script src="./scripts/templates.js"></script>
-    <script src="./scripts/db.js"></script>
     <script src="./script.js"></script>
-    <script src="./scripts/standard.js"></script>
-    <script src="./scripts/contact.js"></script>
+    <script src="./scripts/headerFooter.js"></script>
 </head>
 
 <body onload="includeHTML(), init()">
-
     <div w3-include-html="assets/templates/header.html"></div>
 
     <div class="min_height_of_website bg_deco">
         <div class="main m_auto display_flex_row center_flex-start">
-
             <section class="block_style section_pad_left_right display_flex_column center_center">
                 <section class="cards_section display_flex_row center_flex-start" id="pokemon">
                 </section>
+                <div class="grey_overlay display_flex_row center_center d_none" id="grey_overlay"
+                    onclick="toggleGreyOverlay(i)">
+                    <div class="pokemon_overlay display_flex_row center_center" id="pokemon_overlay"
+                        onclick="addOverlay(event)"></div>
+                </div>
                 <div class="loading d_none" id="loading_spinner">
                     <img class="loading_spinner" src="./assets/icons/logo.png" alt="Ladevorgang">
                 </div>
-                <button class="btn" id="load_more_btn" onclick="loadMorePokes()">Weitere Pokemons</button>
-                <div class="error_message d_none" id="error_message"></div>
-
+                <div class="d_none" id="error_message"></div>
+                <div id="button_regulation">
+                    <button class="btn d_none" id="load_more_btn" onclick="loadMorePokes()">Weitere Pokemons</button>
+                    <button class="btn_arrow_up btn_small d_none" id="back_to_top" onclick="scrollToTop()">
+                        <img src="./assets/icons/arrow_up.png" alt="zurück zum Seitenanfang">
+                    </button>
+                </div>
 
             </section>
         </div>

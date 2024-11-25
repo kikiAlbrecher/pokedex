@@ -6,14 +6,15 @@
 
 .block_style {
     width: 100%;
+    padding-top: 32px;
 }
 
 .d_none {
     display: none;
 }
 
-.error_message {
-    color: red;
+.search_sector {
+    gap: 8px;
 }
 
 .loading {
@@ -21,7 +22,7 @@
 }
 
 .loading_spinner {
-    width: 60%;
+    width: 32%;
     aspect-ratio: 1 / 1;
     animation: rotate 1s linear infinite;
     margin: 40px 0;
@@ -29,44 +30,291 @@
 
 @keyframes rotate {
     from {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
+}
 
 .cards_section {
     flex-wrap: wrap;
     padding-top: 16px;
-    padding-bottom: 16px;
-    gap: 40px;
+    padding-bottom: 40px;
+    gap: 48px;
+}
+
+.more_search_results {
+    gap: 8px;
+    width: 100%;
 }
 
 .pokemon_card {
     width: 280px;
-    gap: 8px;
     background: rgb(31, 41, 31);
     border-radius: 12px;
 }
 
 .pokemon_card:hover {
     cursor: pointer;
-    transform: scale(1.08);
 }
 
 .poke_id_name {
     padding: 16px;
 }
 
-.pokemon_img {
-    width: 90%;
-    aspect-ratio: 1 / 0.8;
+.pokemon_img_area {
+    width: 100%;
     object-fit: contain;
-    margin: 0 auto;
+    padding: 24px 8px 8px 8px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.pokemon_img {
+    height: 160px;
+    aspect-ratio: 1 / 0.8;
+    transition: transform 0.3s ease-in-out;
+}
+
+.pokemon_card:hover .pokemon_img {
+    transform: scale(1.08);
 }
 
 .pokemon_attributes {
     padding: 8px;
     gap: 16px;
+}
+
+.pokemon_type {
+    height: 40px;
+    aspect-ratio: 1 / 1;
+    padding: 4px;
+    border-radius: 100%;
+    border: 3px solid whitesmoke;
+    color: grey;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.btn_arrow_up {
+    background: rgb(79, 73, 87);
+    position: fixed;
+    left: 50%;
+    top: 84vh;
+    height: 64px;
+    width: 64px;
+}
+
+.grey_overlay {
+    height: 100vh;
+    width: 100%;
+    background: rgba(59, 59, 59, 0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.pokemon_overlay {
+    position: relative;
+    width: 40%;
+    aspect-ratio: 1 / 1.4; 
+    max-width: 800px;
+    max-height: clamp(480px, 88vh, 880px);
+    min-height: 540px;
+    border-radius: 12px;
+    border: 2px solid grey;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
+    background: rgb(13, 50, 64);
+}
+
+.overlay_content {
+    width: 100%;
+    height: 100%;
+}
+
+.overlay_headline {
+    padding: 8px 16px;
+    background-color: rgb(8, 33, 41);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.pokemon_img_in_overlay {
+    width: 100%;
+    height: 30%;
+    padding: 24px 0 8px 0;
+}
+
+.type_with_change_btn {
+    padding: 0 16px;
+    background-color: rgb(8, 33, 41);
+}
+
+.tabs_container {
+    width: 100%;
+}
+
+.tabs_header {
+    border-bottom: 2px solid #ddd;
+    background: rgb(13, 50, 64);
+    gap: 2px;
+}
+
+.tab_button {
+    padding: 0 0 8px 0;
+    width: 33.33%;
+    background: rgb(18, 71, 88);
+    border: none;
+    cursor: pointer;
+}
+
+.tab_button.active {
+    border-bottom: 3px solid #04c8d6;
+}
+
+.h3_variant {
+    text-align: left;
+    text-decoration: underline;
+    font-weight: 500;
+    padding-top: 0;
+    padding-bottom: 16px;
+}
+
+.headline_width {
+    width: clamp(150px, 50%, 400px);
+    font-weight: 400;
+    padding-bottom: 4px;
+}
+
+.tab_content {
+    width: 100%;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.tab_panel {
+    display: none;
+    padding: 16px;
+}
+
+.tab_panel.active {
+    display: block;
+}
+
+
+.moves_list {
+    list-style-type: disc;
+    margin-left: 16px;
+    padding-left: 0;
+}
+
+.moves_list li {
+    margin-bottom: 4px;
+}
+
+.stats_values {
+    gap: 48px;
+    align-items: center;
+}
+
+.stats_representation {
+    width: 40%;
+    gap: 4px;
+    transform: translateY(8px);
+}
+
+.progress_bar_container {
+    width: 100%;
+    height: 12px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.progress_bar {
+    height: 100%;
+    background-color: #04c8d6;
+    border-radius: 8px;
+    transition: width 0.4s ease-in-out;
+}
+
+.evo_chain_images {
+    padding: 8px 16px 0 16px;
+}
+
+.evo_img {
+    width: 25%;
+    aspect-ratio: 1 / 1;
+}
+
+.normal {
+    background: #A8A77A;
+}
+
+.fire {
+    background: #EE8130;
+}
+
+.water {
+    background: #6390F0;
+}
+
+.electric {
+    background: #F7D02C;
+}
+
+.grass {
+    background: #76CC54;
+}
+
+.ice {
+    background: #96D9D6;
+}
+
+.fighting {
+    background: #C22E28;
+}
+
+.poison {
+    background: #A33EA1;
+}
+
+.ground {
+    background: #E2BF65;
+}
+
+.flying {
+    background: #A98FF3;
+}
+
+.psychic {
+    background: #F95587;
+}
+
+.bug {
+    background: #A6B91A;
+}
+
+.rock {
+    background: #B6A136;
+}
+
+.ghost {
+    background: #735797;
+}
+
+.dragon {
+    background: #6F35FC;
+}
+
+.dark {
+    background: #705746;
+}
+
+.steel {
+    background: #B7B7CE;
+}
+
+.fairy {
+    background: #D685AD;
 }

@@ -10,12 +10,25 @@
     color: rgb(255, 255, 255);
 }
 
-.bg_deco {
-    background-color: rgb(0, 0, 0);
+.min_height_of_website {
+    min-height: calc(100vh - 112px - 120px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .m_auto {
     margin: 0 auto;
+}
+
+.section_pad_left_right {
+    padding-left: 160px;
+    padding-right: 160px;
+}
+
+.bg_deco {
+    background-color: rgb(0, 0, 0);
 }
 
 .img {
@@ -46,6 +59,30 @@
     border: 3px solid rgb(90, 90, 91);
 }
 
+.btn_small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    background: rgb(203, 203, 203);
+    border-radius: 100%;
+    border: 3px solid whitesmoke;
+}
+
+.btn_small>img {
+    height: 37px;
+    width: 37px;
+    object-fit: contain;
+}
+
+.btn_small:hover {
+    cursor: pointer;
+    background: rgb(203, 203, 203);
+    border-color: rgb(67, 67, 67);
+    transform: scale(1.2);
+}
+
 a {
     color: black;
     text-decoration: none;
@@ -59,9 +96,10 @@ a:hover {
 }
 
 .text_input_field {
-    width: 100%;
-    margin-bottom: 24px;
     color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 12px;
+    padding: 2px 8px;
 }
 
 form {
@@ -83,6 +121,80 @@ form {
     padding: 12px 40px;
 }
 
+.display_flex {
+    display: flex;
+}
+
+.display_flex_row {
+    display: flex;
+    flex-direction: row;
+}
+
+.display_flex_column {
+    display: flex;
+    flex-direction: column;
+}
+
+.display_flex_column_reverse {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.center_center {
+    justify-content: center;
+    align-items: center;
+}
+
+.center_flex-start {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.flex-end_center {
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.flex-end_flex-start {
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.flex-start_flex-end {
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.flex-start_flex-start {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.flex-start_center {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.space-around_center {
+    justify-content: space-around;
+    align-items: center;
+}
+
+.space-between_center {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.space-between_flex-end {
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.space-between_flex-start {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 @media(min-width: 1920px) {
     form {
         width: 1100px;
@@ -96,7 +208,53 @@ form {
     }
 }
 
+@media (max-width: 1600px) {
+    .min_height_of_website {
+        min-height: calc(100vh - 96px * 2);
+    }
+
+    .section_pad_left_right {
+        padding-left: 120px;
+        padding-right: 120px;
+    }
+}
+
+@media(max-width: 1350px) {
+    .section_pad_left_right {
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+}
+
+@media (max-width: 1144px) {
+    .btn_small {
+        height: 32px;
+        width: 32px;
+    }
+
+    .btn_small>img {
+        height: 29px;
+        width: 29px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .min_height_of_website {
+        min-height: calc(100vh - 80px - 112px);
+    }
+
+    .section_pad_left_right {
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+}
+
 @media(max-width: 800px) {
+    .section_pad_left_right {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
     form {
         width: 100% !important;
     }
@@ -106,8 +264,15 @@ form {
         padding-bottom: 16px;
     }
 
-    .text_input_field {
-        margin-bottom: 16px;
+    .btn_small {
+        height: 24px;
+        width: 24px;
+        border: 2px solid whitesmoke;
+    }
+
+    .btn_small>img {
+        height: 22px;
+        width: 22px;
     }
 }
 
@@ -126,13 +291,27 @@ form {
     form {
         padding: 7%;
     }
+}
 
-    .text_input_field {
-        margin-bottom: 8px;
+@media(max-width: 650px) {
+    .section_pad_left_right {
+        padding-left: 20px;
+        padding-right: 20px;
     }
 }
 
-@media(max-width: 450px) {
+@media (max-width: 500px) {
+    .min_height_of_website {
+        min-height: calc(100vh - 80px * 2);
+    }
+}
+
+@media(max-width: 480px) {
+    .section_pad_left_right {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
     .btn_form {
         display: flex;
         justify-content: center;

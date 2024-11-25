@@ -2,32 +2,35 @@
     <div class="header section_pad_left_right m_auto">
         <nav class="header_large display_flex_row space-between_flex-end">
             <a class="logo_row display_flex_row center_center" href="index.html">
-                    <img class="logo" src="assets/icons/logo.png" alt="Logo">
-                    <h3>Pokedex</h3>
+                <img class="logo" src="assets/icons/logo.png" alt="Logo">
+                <h2>Pokedex</h2>
             </a>
-            <nav class="navigation_large">
-                <a class="menu_links generalfs" href="index.html">Start</a>
-                <a class="menu_links generalfs" href="contact.html">Kontakt</a>
-                <a class="menu_links generalfs" href="imprint.html">Impressum</a>
-            </nav>
+            <div class="search_sector display_flex_row">
+                <img class="loupe" src="assets/icons/magnifier.png" alt="Lupe">
+                <input type="text" class="text_input_field" id="search_input_desktop" title="At least 3 letters" required
+                    placeholder="Search for names" oninput="searchPokemon()">
+            </div>
         </nav>
         <nav class="header_menu_mobile">
             <div class="mobile_header_div display_flex_row space-between_center">
                 <a class="logo_row display_flex_row flex-start_center" href="index.html">
                     <img class="logo" src="assets/icons/logo.png" alt="Logo">
+                    <h2 class="logo_text">Pokedex</h2>
                 </a>
                 <button onclick="toggleRespMenu()">
                     <img class="bar_icon_img" src="assets/icons/menu-burger-horizontal.svg" alt="Menu">
                 </button>
             </div>
-            <nav id="resp_menu" class="resp_menu_box display_flex_column resp_menu_closed">
+            <div class="resp_menu_box display_flex_column center_center resp_menu_closed" id="resp_menu">
+                <div class="search_sector display_flex_row flex-start_center">
+                    <img class="loupe" src="assets/icons/magnifier.png" alt="Lupe">
+                    <input type="text" class="text_input_field" id="search_input_mobile" title="At least 3 letters" required
+                        placeholder="Search for names" oninput="searchPokemon()">
+                </div>
                 <button class="btn_resp_menu" onclick="toggleRespMenu()">
-                    <span class="closing_sign">X</span>
+                    <span class="closing_sign">Close</span>
                 </button>
-                <a class="menu_links" href="index.html">Start</a>
-                <a class="menu_links" href="imprint.html">Impressum</a>
-                <a class="menu_links" href="contact.html">Kontakt</a>
-            </nav>
+            </div>
         </nav>
     </div>
 </header>
@@ -52,8 +55,13 @@
         padding-bottom: 8px;
     }
 
-    .navigation_large {
-        padding-bottom: 12px;
+    .loupe {
+        height: 40px;
+        aspect-ratio: 1 / 1;
+    }
+
+    .search_sector {
+        gap: 16px;
     }
 
     @media(max-width: 1600px) {
@@ -69,18 +77,6 @@
     @media(min-width: 820px) {
         .header_menu_mobile {
             display: none;
-        }
-
-        .menu_links {
-            color: white;
-            font-weight: 600;
-            padding-bottom: 8px;
-            margin-left: 24px;
-        }
-
-        .menu_links:hover {
-            cursor: pointer;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.8);
         }
     }
 
@@ -119,16 +115,15 @@
         }
 
         .resp_menu_box {
-            background-color: rgb(121, 117, 117);
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
+            background-color: rgb(31, 41, 31);
+            border-radius: 12px;
             border: none;
-            width: 104px;
             position: absolute;
             top: 12px;
             right: 0;
             transition: all 250ms ease-in-out;
-            padding: 3px;
+            padding: 3px 8px;
+            gap: 6px;
         }
 
         .resp_menu_closed {
@@ -137,21 +132,21 @@
 
         .btn_resp_menu {
             padding: 0;
-            font-size: 10px !important;
+            font-size: 12px !important;
             border: none;
+            width: 64px;
         }
 
         .btn_resp_menu:hover {
             cursor: pointer;
-            background-color: rgb(254, 204, 154);
+            background-color: rgb(172, 172, 172);
         }
 
         .closing_sign {
             text-align: center;
-            font-weight: 900;
-            font-size: 10px !important;
+            font-size: 12px !important;
             color: black;
-            padding: 0;
+            padding: 2;
         }
 
         .bar_icon_img {
@@ -159,15 +154,8 @@
             aspect-ratio: 1 / 1;
         }
 
-        .menu_links {
-            font-size: 12px;
-            font-weight: 400;
-            text-align: center;
-        }
-
-        .menu_links:hover {
-            text-decoration: underline;
-            text-decoration-thickness: 3px;
+        .loupe {
+            height: 32px;
         }
     }
 
@@ -175,12 +163,11 @@
         .resp_menu_box {
             top: 8px;
         }
+    }
 
-
-        @media (max-width: 435px) {
-            .logo_row {
-                height: 80px;
-            }
+    @media (max-width: 435px) {
+        .logo_row {
+            height: 80px;
         }
     }
 </style>
