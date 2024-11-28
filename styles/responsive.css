@@ -1,4 +1,4 @@
-@media(max-width: 1280px) {
+@media(max-width: 1200px) {
     .pokemon_overlay {
         width: 56%;
     }
@@ -16,12 +16,17 @@
     .h3_variant {
         padding-bottom: 8px;
     }
+
+    .btn_arrow_up {
+        height: 48px;
+        width: 48px;
+        left: calc(50% - 48px/2);
+    }
 }
 
 @media(max-width: 800px) {
     .pokemon_overlay {
         width: 80%;
-        max-height: clamp(480px, 80vh, 880px);
     }
 
     .pokemon_type {
@@ -73,11 +78,16 @@
 
     .pokemon_overlay {
         width: 95%;
-        max-height: clamp(480px, 72vh, 880px);
     }
 
     .logo_text {
         display: none;
+    }
+
+    .btn_arrow_up {
+        height: 32px;
+        width: 32px;
+        left: calc(50% - 32px/2);
     }
 }
 
@@ -116,16 +126,12 @@
     }
 }
 
-@media(max-width: 360px) {
-    .headline_width {
-        width: 104px;
+@media(max-width: 384px) {
+    .headline_width{
+        width: 148px;
     }
 
     .stats_values {
         gap: 16px;
-    }
-
-    .stats_representation {
-        width: 48%;
     }
 }

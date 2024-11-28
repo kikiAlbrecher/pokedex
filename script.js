@@ -1,15 +1,16 @@
-let currentPokemons = [];
 const BASE_URL = "https://pokeapi.co/api/v2/";
 const POKE_URL = "pokemon";
 const EVOLUTION_URL = "evolution-chain";
 const LIMIT_URL = "?limit=";
-const LIMIT = 10;
+let LIMIT = 20;
 let OFFSET = 0;
+let currentPokemons = [];
 let evolutionChains = [];
+let filteredPokemons = [];
+let allFilteredPokemons = [];
 let i = 0;
-let allfilteredPokemons = [];
-const MAX_RESULTS = 3;
-let currentDisplayedIndex = MAX_RESULTS;
+const filterRestriction = 10;
+let displayedFilteredPokemonIndex = filterRestriction;
 
 function init() {
   getPokemons();
@@ -56,7 +57,7 @@ function processPokemonDetails(pokeDetails) {
   let moves = pokeDetails.moves.slice(0, 3).map(firstMoves => firstMoves.move.name).join(', ');
   let pokeStats = pokeDetails.stats;
 
-  pushPokeToArr(pokeName, pokeDetails.url, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats);
+  pushPokeToArr(pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats);
 }
 
 function handleError(e) {
@@ -96,8 +97,8 @@ function showLoadingSpinner(show) {
   }
 }
 
-function pushPokeToArr(pokeName, pokeUrl, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats) {
-  currentPokemons.push({ pokeName, pokeUrl, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats });
+function pushPokeToArr(pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats) {
+  currentPokemons.push({ pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats });
 }
 
 function pushEvoToArr(evoChainStarter, evoTo1, evoTo2) {
@@ -122,7 +123,10 @@ function searchPokemon() {
     let filteredPokemons = filterPokemonsBySearchTerm(searchTerm);
     renderFilteredPokemons(filteredPokemons);
   } else {
-    renderPokemons(currentPokemons);
+    allFilteredPokemons = [];
+    displayedFilteredPokemonIndex = filterRestriction;
+    renderPokemons();
+    document.body.classList.remove('overlay_active');
     toggleLoadMoreButton(false);
   }
 }
@@ -133,7 +137,7 @@ function getSearchTerm() {
 
 function filterPokemonsBySearchTerm(searchTerm) {
   let searchTermLow = searchTerm.toLowerCase();
-  let filteredPokemons = [];
+  filteredPokemons = [];
 
   currentPokemons.forEach(pokemon => {
     if (pokemon.pokeName.toLowerCase().includes(searchTermLow) &&
@@ -145,41 +149,36 @@ function filterPokemonsBySearchTerm(searchTerm) {
 }
 
 function renderFilteredPokemons(filteredPokemons) {
-  allfilteredPokemons = filteredPokemons;
-  currentDisplayedIndex = MAX_RESULTS;
-
-  let filteredPokemonContainer = document.getElementById('pokemon');
-  filteredPokemonContainer.innerHTML = '';
+  let filteredPokemonsRef = document.getElementById('pokemon');
+  filteredPokemonsRef.innerHTML = '';
+  allFilteredPokemons = filteredPokemons;
 
   if (filteredPokemons.length === 0) {
-    filteredPokemonContainer.innerHTML = getNoFoundTemplate();
+    filteredPokemonsRef.innerHTML = getNoFoundTemplate();
+  } else if (filteredPokemons.length <= filterRestriction) {
+    filteredPokemons.forEach((pokemon, i) => {
+      filteredPokemonsRef.innerHTML += getPokemonCardsTemplate(pokemon, i);
+    });
   } else {
-    displayPokemons(filteredPokemons.slice(0, MAX_RESULTS), filteredPokemonContainer);
-    if (filteredPokemons.length > MAX_RESULTS) {
-      showMoreResults(filteredPokemonContainer);
-    }
+    filteredPokemons.slice(0, filterRestriction).forEach((pokemon, i) => {
+      filteredPokemonsRef.innerHTML += getPokemonCardsTemplate(pokemon, i);
+      filteredPokemonsRef.innerHTML += getMoreResultsTemplate();
+    });
   }
 }
 
-function displayPokemons(pokemons, container) {
-  pokemons.forEach((pokemon, i) => {
-    container.innerHTML += getPokemonCardsTemplate(pokemon, i);
-  });
-}
-
-function showMoreResults(container) {
-  const moreResultsRef = getMoreResultsTemplate();
-  container.innerHTML += moreResultsRef;
-}
-
 function showMoreFilteredPokemons() {
-  const nextPokemons = allfilteredPokemons.slice(currentDisplayedIndex, currentDisplayedIndex + MAX_RESULTS);
-  displayPokemons(nextPokemons, document.getElementById('pokemon'));
-  currentDisplayedIndex += MAX_RESULTS;
+  const nextChargeOfFilteredPokemons = allFilteredPokemons.slice(displayedFilteredPokemonIndex, displayedFilteredPokemonIndex + filterRestriction);
+  let filteredPokemonsRef = document.getElementById('pokemon');
 
-  if (currentDisplayedIndex >= allfilteredPokemons.length) {
-    const loadMoreResultsButton = document.getElementById('show_more_search_results');
-    loadMoreResultsButton.classList.add('d_none');
+  nextChargeOfFilteredPokemons.forEach((pokemon, i) => {
+    filteredPokemonsRef.innerHTML += getPokemonCardsTemplate(pokemon, i + displayedFilteredPokemonIndex);
+  });
+
+  displayedFilteredPokemonIndex += filterRestriction;
+
+  if (displayedFilteredPokemonIndex >= allFilteredPokemons.length) {
+    document.getElementById('show_more_search_results').classList.add('d_none');
     document.getElementById('more_results_infotext').classList.add('d_none');
   }
 }
@@ -187,6 +186,7 @@ function showMoreFilteredPokemons() {
 function toggleGreyOverlay(i) {
   let greyOverlayRef = document.getElementById('grey_overlay');
   greyOverlayRef.classList.toggle('d_none');
+  document.body.classList.toggle('overlay_active');
   renderOverlay(i);
 }
 
@@ -194,30 +194,27 @@ function renderOverlay(i) {
   let pokemonOverlayRef = document.getElementById('pokemon_overlay');
   pokemonOverlayRef.innerHTML = '';
 
-  // Wenn es gefilterte Pokémon gibt
-  if (allfilteredPokemons.length > 0) {
-    // Hole das Pokémon aus allfilteredPokemons anhand des Index
-    const selectedPokemon = allfilteredPokemons[i];
-
+  if (allFilteredPokemons.length !== 0) {
+    selectedPokemon = allFilteredPokemons[i];
     let currentPokemonIndex = currentPokemons.findIndex(pokemon => pokemon.pokeId === selectedPokemon.pokeId);
-    console.log(currentPokemonIndex);
 
-    // Wenn das Pokémon in currentPokemons gefunden wird
     if (currentPokemonIndex !== -1) {
       i = currentPokemonIndex;
-      // Rendern das Overlay mit dem richtigen Pokémon basierend auf currentPokemonIndex
       pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
-
-      // Spezifische UI-Anpassungen
-      document.getElementById('previous_poke').classList.add('d_none');
-      document.getElementById('next_poke').classList.add('d_none');
-      document.getElementById('sequence_attributes').classList.remove('space-between_center');
-      document.getElementById('sequence_attributes').classList.add('center_center');
+      changeOverlayLayout();
     }
   } else {
-    // Falls keine gefilterten Ergebnisse, direkt das Overlay mit dem Index i anzeigen
     pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
   }
+  let arrowUpRef = document.getElementById('back_to_top');
+  arrowUpRef.classList.add('d_none');
+}
+
+function changeOverlayLayout() {
+  document.getElementById('previous_poke').classList.add('d_none');
+  document.getElementById('next_poke').classList.add('d_none');
+  document.getElementById('sequence_attributes').classList.remove('space-between_center');
+  document.getElementById('sequence_attributes').classList.add('center_center');
 }
 
 function addOverlay(event) {

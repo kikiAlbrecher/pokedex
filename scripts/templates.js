@@ -4,19 +4,6 @@ function getErrorMessage() {
     `;
 }
 
-function getMoreResultsTemplate() {
-    return `
-        <div class="more_search_results display_flex_column center_center" id="more_search_results">
-            <p class="more_results_info" id="more_results_infotext">
-                Only ${MAX_RESULTS} pokémons are shown. Further results are available.
-            </p>
-            <button class="btn" id="show_more_search_results" onclick="showMoreFilteredPokemons()">
-                show more results
-            </button>
-        </div>
-    `;
-  }
-
 function getPokemonCardsTemplate(pokemon, i) {
     let typeCollection = pokemon.pokeType.split(' ');
     let typeImages = typeCollection.map(type => {
@@ -40,6 +27,20 @@ function getPokemonCardsTemplate(pokemon, i) {
                     </div>
     `;
 }
+
+
+function getMoreResultsTemplate() {
+    return `
+        <div class="more_search_results display_flex_column center_center" id="more_search_results">
+            <p class="more_results_info" id="more_results_infotext">
+                Only ${filterRestriction} pokémons are shown. Further results are available.
+            </p>
+            <button class="btn" id="show_more_search_results" onclick="showMoreFilteredPokemons()">
+                show more results
+            </button>
+        </div>
+    `;
+  }
 
 function getNoFoundTemplate() {
     return `
@@ -91,7 +92,7 @@ function getPokemonOverlay(i) {
                 </div>
         
                 <div class="tab_content">
-                    <div id="main" class="tab_panel ">
+                    <div id="main" class="tab_panel active">
                         <h3 class="h3_variant">Main Info</h3>
                         <div class="display_flex_column">
                             <div class="main_infos display_flex_row">
@@ -116,7 +117,7 @@ function getPokemonOverlay(i) {
                             </div>
                         </div>
                     </div>    
-                    <div id="stats" class="tab_panel active">
+                    <div id="stats" class="tab_panel">
                         <h3 class="h3_variant">Stats</h3>
                         <div class="stats_values display_flex_row">
                             <h5 class="headline_width">HP: ${currentPokemons[i].pokeStats[0].base_stat}</h5>

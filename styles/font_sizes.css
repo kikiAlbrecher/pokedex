@@ -103,7 +103,7 @@ h4 {
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 384px) {
     * {
         font-size: 14px;
     }

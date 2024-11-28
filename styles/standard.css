@@ -67,12 +67,12 @@
     width: 40px;
     background: rgb(203, 203, 203);
     border-radius: 100%;
-    border: 3px solid whitesmoke;
+    border: 2px solid whitesmoke;
 }
 
 .btn_small>img {
-    height: 37px;
-    width: 37px;
+    height: 36px;
+    width: 36px;
     object-fit: contain;
 }
 
@@ -233,8 +233,8 @@ form {
     }
 
     .btn_small>img {
-        height: 29px;
-        width: 29px;
+        height: 28px;
+        width: 28px;
     }
 }
 
@@ -271,8 +271,8 @@ form {
     }
 
     .btn_small>img {
-        height: 22px;
-        width: 22px;
+        height: 20px;
+        width: 20px;
     }
 }
 
