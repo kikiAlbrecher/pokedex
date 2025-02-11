@@ -97,7 +97,7 @@ a:hover {
 
 .text_input_field {
     color: rgb(0, 0, 0);
-    border: none;
+    border: unset;
     border-radius: 12px;
     padding: 2px 8px;
 }

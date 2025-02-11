@@ -14,13 +14,7 @@
     }
 
     .h3_variant {
-        padding-bottom: 8px;
-    }
-
-    .btn_arrow_up {
-        height: 48px;
-        width: 48px;
-        left: calc(50% - 48px/2);
+        padding-bottom: 4px;
     }
 }
 
@@ -83,12 +77,6 @@
     .logo_text {
         display: none;
     }
-
-    .btn_arrow_up {
-        height: 32px;
-        width: 32px;
-        left: calc(50% - 32px/2);
-    }
 }
 
 @media(max-width: 408px) {
@@ -127,7 +115,7 @@
 }
 
 @media(max-width: 384px) {
-    .headline_width{
+    .headline_width {
         width: 148px;
     }
 

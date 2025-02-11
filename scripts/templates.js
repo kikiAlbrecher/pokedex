@@ -1,33 +1,32 @@
 function getErrorMessage() {
     return `
-        <h4>A problem occured. Please reload the website.</4>
+        <h4>A problem occured. Please reload the website.</h4>
     `;
 }
 
 function getPokemonCardsTemplate(pokemon, i) {
-    let typeCollection = pokemon.pokeType.split(' ');
+    let typeCollection = (pokemon.pokeType || '').split(' ');
     let typeImages = typeCollection.map(type => {
         return `
             <img class="pokemon_type ${type}" src="assets/icons/${type}.svg" alt="${type}">
         `;
-    }).join('');
+    }).join(''); 
 
     return `
-                    <div class="pokemon_card display_flex_column" onclick="toggleGreyOverlay(${i})">
-                        <div class="poke_id_name display_flex_row space-between_center">
-                            <h4>#${pokemon.pokeId}</h4>
-                            <h4>${pokemon.pokeName}</h4>
-                        </div>
-                        <div class="pokemon_img_area ${typeCollection[0]} display_flex_row center_center">
-                        <img class="pokemon_img" src="${pokemon.pokeImg}" alt="${pokemon.pokeName}">
-                        </div>
-                        <div class="pokemon_attributes display_flex_row center_center">
-                            ${typeImages}
-                        </div>
-                    </div>
+        <div class="pokemon_card display_flex_column" onclick="toggleGreyOverlay(${i})">
+            <div class="poke_id_name display_flex_row space-between_center">
+                <h4>#${pokemon.pokeId}</h4>
+                <h4>${pokemon.pokeName}</h4>
+            </div>
+            <div class="pokemon_img_area ${typeCollection[0]} display_flex_row center_center">
+                <img class="pokemon_img" src="${pokemon.pokeImg}" alt="${pokemon.pokeName}">
+            </div>
+            <div class="pokemon_attributes display_flex_row center_center">
+                ${typeImages}
+            </div>
+        </div>
     `;
 }
-
 
 function getMoreResultsTemplate() {
     return `
@@ -40,7 +39,7 @@ function getMoreResultsTemplate() {
             </button>
         </div>
     `;
-  }
+}
 
 function getNoFoundTemplate() {
     return `
@@ -67,7 +66,7 @@ function getPokemonOverlay(i) {
             <div class="overlay_headline display_flex_row space-between_center">
                 <h2>#${currentPokemons[i].pokeId}</h2>
                 <h2>${currentPokemons[i].pokeName}</h2>
-                <button class="btn_small" onclick="removeOverlay(event)">
+                <button class="btn_small" onclick="removeGreyOverlay(event)">
                     <img src="assets/icons/close.png" title="close" alt="close">
                 </button>
             </div>
@@ -194,19 +193,23 @@ function getPokemonOverlay(i) {
                         <h3 class="h3_variant">Evo Chain</h3>
                         <div class="display_flex_column">
                             <div class="evo_chain_images display_flex_row space-around_center">
-                ${evolution ? `
-                    ${evolution.evoChainStarter ? `<img class="evo_img" src="${getPokemonImage(evolution.evoChainStarter)}" alt="${evolution.evoChainStarter}">` : ``}
-                    ${evolution.evoTo1 ? `<p>>></p><img class="evo_img" src="${getPokemonImage(evolution.evoTo1)}" alt="${evolution.evoTo1}">` : ``}
-                    ${evolution.evoTo2 ? `<p>>></p><img class="evo_img" src="${getPokemonImage(evolution.evoTo2)}" alt="${evolution.evoTo2}">` : ``}
-                ` : 'No evolution available'}
-            </div>
-            <div class="display_flex_row space-around_center">
-                ${evolution ? `
-                    ${evolution.evoChainStarter ? `<p>${evolution.evoChainStarter}</p>` : ``}
-                    ${evolution.evoTo1 ? `<p>${evolution.evoTo1}</p>` : ``}
-                    ${evolution.evoTo2 ? `<p>${evolution.evoTo2}</p>` : ``}
-                ` : 'No evolution available'}
-            </div>
+                                ${evolution ? `
+                                    <div class="evo_chain_poke display_flex_column center_center">
+                                        ${evolution.evoChainStarter ? `<img class="evo_img evo_img_small" src="${getPokemonImage(evolution.evoChainStarter)}" alt="${evolution.evoChainStarter}">` : ``}
+                                        ${evolution.evoChainStarter ? `<p>${evolution.evoChainStarter}</p>` : ``}
+                                    </div>
+                                    <p>>></p>
+                                    <div class="evo_chain_poke display_flex_column center_center">
+                                        ${evolution.evoTo1 ? `<img class="evo_img evo_img_medium" src="${getPokemonImage(evolution.evoTo1)}" alt="${evolution.evoTo1}">` : ``}
+                                        ${evolution.evoTo1 ? `<p>${evolution.evoTo1}</p>` : ``}
+                                    </div>
+                                    <p>>></p>
+                                    <div class="evo_chain_poke display_flex_column center_center">
+                                        ${evolution.evoTo2 ? `<img class="evo_img" src="${getPokemonImage(evolution.evoTo2)}" alt="${evolution.evoTo2}">` : ``}
+                                        ${evolution.evoTo2 ? `<p>${evolution.evoTo2}</p>` : ``}
+                                    </div>
+                                ` : 'No evolution available'}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -20,9 +20,9 @@ function init() {
 async function getPokemons() {
   showLoadingSpinner(true);
   try {
-    const responseToJson = await fetchPokemonsData();
-    for (let index = 0; index < responseToJson.results.length; index++) {
-      const pokeDetails = await fetchPokemonDetails(responseToJson.results[index].url);
+    const responseAsJson = await fetchPokemonsData();
+    for (let index = 0; index < responseAsJson.results.length; index++) {
+      const pokeDetails = await fetchPokemonDetails(responseAsJson.results[index].url);
       processPokemonDetails(pokeDetails);
     }
     renderPokemons();
@@ -35,8 +35,8 @@ async function getPokemons() {
 
 async function fetchPokemonsData() {
   let response = await fetch(BASE_URL + POKE_URL + LIMIT_URL + LIMIT + "&offset=" + OFFSET);
-  let responseToJson = await response.json();
-  return responseToJson;
+  let responseAsJson = await response.json();
+  return responseAsJson;
 }
 
 async function fetchPokemonDetails(url) {
@@ -62,6 +62,7 @@ function processPokemonDetails(pokeDetails) {
 
 function handleError(e) {
   let errorMessageRef = document.getElementById('error_message');
+
   document.getElementById('error_message').classList.remove('d_none');
   errorMessageRef.innerHTML = getErrorMessage(e);
   currentPokemons = [];
@@ -71,9 +72,9 @@ function handleError(e) {
 async function getEvoChains() {
   try {
     let response = await fetch(BASE_URL + EVOLUTION_URL + LIMIT_URL + LIMIT + "&offset=" + OFFSET);
-    let responseToJson2 = await response.json();
-    for (let index = 0; index < responseToJson2.results.length; index++) {
-      const evoUrl = responseToJson2.results[index].url;
+    let responseAsJson2 = await response.json();
+    for (let index = 0; index < responseAsJson2.results.length; index++) {
+      const evoUrl = responseAsJson2.results[index].url;
       let evoResponse = await fetch(evoUrl);
       let evoDetails = await evoResponse.json();
       let evoChainStarter = evoDetails.chain.species.name;
@@ -126,7 +127,6 @@ function searchPokemon() {
     allFilteredPokemons = [];
     displayedFilteredPokemonIndex = filterRestriction;
     renderPokemons();
-    document.body.classList.remove('overlay_active');
     toggleLoadMoreButton(false);
   }
 }
@@ -134,6 +134,10 @@ function searchPokemon() {
 function getSearchTerm() {
   return window.innerWidth > 820 ? document.getElementById('search_input_desktop').value : document.getElementById('search_input_mobile').value;
 }
+
+
+// const POKE_API = "https://pokeapi.co/api/v2/pokemon";
+
 
 function filterPokemonsBySearchTerm(searchTerm) {
   let searchTermLow = searchTerm.toLowerCase();
@@ -186,13 +190,12 @@ function showMoreFilteredPokemons() {
 function toggleGreyOverlay(i) {
   let greyOverlayRef = document.getElementById('grey_overlay');
   greyOverlayRef.classList.toggle('d_none');
-  document.body.classList.toggle('overlay_active');
   renderOverlay(i);
+  handleScrollbar();
 }
 
-function renderOverlay(i) {
-  let pokemonOverlayRef = document.getElementById('pokemon_overlay');
-  pokemonOverlayRef.innerHTML = '';
+function getSelectedPokemon(i) {
+  let selectedPokemon = null;
 
   if (allFilteredPokemons.length !== 0) {
     selectedPokemon = allFilteredPokemons[i];
@@ -200,14 +203,25 @@ function renderOverlay(i) {
 
     if (currentPokemonIndex !== -1) {
       i = currentPokemonIndex;
-      pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
-      changeOverlayLayout();
     }
-  } else {
-    pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
   }
-  let arrowUpRef = document.getElementById('back_to_top');
-  arrowUpRef.classList.add('d_none');
+  return i;
+}
+
+function updatePokemonOverlay(i) {
+  let pokemonOverlayRef = document.getElementById('pokemon_overlay');
+  pokemonOverlayRef.innerHTML = '';
+
+  pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
+
+  if (allFilteredPokemons.length !== 0) {
+    changeOverlayLayout();
+  }
+}
+
+function renderOverlay(i) {
+  i = getSelectedPokemon(i);
+  updatePokemonOverlay(i);
 }
 
 function changeOverlayLayout() {
@@ -223,10 +237,17 @@ function addOverlay(event) {
   event.stopPropagation();
 }
 
-function removeOverlay(event) {
+function removeGreyOverlay(event) {
   let greyOverlayRef = document.getElementById('grey_overlay');
   greyOverlayRef.classList.add('d_none');
   event.stopPropagation();
+  handleScrollbar();
+}
+
+function handleScrollbar() {
+  let greyOverlayRef = document.getElementById('grey_overlay');
+  greyOverlayRef.classList.contains('d_none') ?
+    document.body.classList.remove('overlay_active') : document.body.classList.add('overlay_active');
 }
 
 function switchTab(event, tabName) {
@@ -282,24 +303,4 @@ function loadMorePokes() {
 function toggleLoadMoreButton(show) {
   const loadMoreButton = document.getElementById('load_more_btn');
   show ? loadMoreButton.classList.add('d_none') : loadMoreButton.classList.remove('d_none');
-}
-
-function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
-
-window.onscroll = function () {
-  scrollFunction();
-};
-
-function scrollFunction() {
-  let backToTopRef = document.getElementById('back_to_top');
-  if (window.scrollY > 20) {
-    backToTopRef.classList.remove('d_none');
-  } else {
-    backToTopRef.classList.add('d_none');
-  }
 }
