@@ -224,6 +224,11 @@ function renderOverlay(i) {
   updatePokemonOverlay(i);
 }
 
+function renderOverlay(i) {
+  i = getSelectedPokemon(i);
+  updatePokemonOverlay(i);
+}
+
 function changeOverlayLayout() {
   document.getElementById('previous_poke').classList.add('d_none');
   document.getElementById('next_poke').classList.add('d_none');
