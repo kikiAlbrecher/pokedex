@@ -1,16 +1,30 @@
+/**
+ * Returns an error message template.
+ * This template can be displayed when there is an issue with loading the page.
+ * 
+ * @returns {string} A string of HTML representing the error message.
+ */
 function getErrorMessage() {
     return `
         <h4>A problem occured. Please reload the website.</h4>
     `;
 }
 
+/**
+ * Generates a Pokémon card template with information about the Pokémon.
+ * The template includes the Pokémon's ID, name, image, and types.
+ * 
+ * @param {Object} pokemon - The Pokémon data object.
+ * @param {number} i - The index of the Pokémon.
+ * @returns {string} The HTML template string for the Pokémon card.
+ */
 function getPokemonCardsTemplate(pokemon, i) {
     let typeCollection = (pokemon.pokeType || '').split(' ');
     let typeImages = typeCollection.map(type => {
         return `
             <img class="pokemon_type ${type}" src="assets/icons/${type}.svg" alt="${type}">
         `;
-    }).join(''); 
+    }).join('');
 
     return `
         <div class="pokemon_card display_flex_column" onclick="toggleGreyOverlay(${i})">
@@ -28,6 +42,11 @@ function getPokemonCardsTemplate(pokemon, i) {
     `;
 }
 
+/**
+ * Returns the template for showing more results in a Pokémon search.
+ * 
+ * @returns {string} The HTML template string for the "show more results" section.
+ */
 function getMoreResultsTemplate() {
     return `
         <div class="more_search_results display_flex_column center_center" id="more_search_results">
@@ -41,12 +60,24 @@ function getMoreResultsTemplate() {
     `;
 }
 
+/**
+ * Returns a template for when no Pokémon are found in the search.
+ * 
+ * @returns {string} The HTML template string for the "no Pokémon found" message.
+ */
 function getNoFoundTemplate() {
     return `
         <div>No Pokémon found.</div>
     `;
 }
 
+/**
+ * Generates the overlay template for a specific Pokémon.
+ * This template includes the Pokémon's stats, abilities, moves, and evolutionary chain (if available).
+ * 
+ * @param {number} i - The index of the Pokémon in the currentPokemons array.
+ * @returns {string} The HTML template string for the Pokémon overlay.
+ */
 function getPokemonOverlay(i) {
     let typeCollection = currentPokemons[i].pokeType.split(' ');
     let typeImages = typeCollection.map(type => {
