@@ -22,10 +22,17 @@
 }
 
 .loading_spinner {
-    width: 24%;
+    width: clamp(100px, 20%, 400px);
     aspect-ratio: 1 / 1;
     animation: rotate 1s linear infinite;
     margin: 40px 0;
+}
+
+.spinner_overlay {
+    position: fixed;
+    top: 30%;
+    left: calc(50vw -((clamp(100px, 20%, 400px)) / 2));
+    z-index: 9999;
 }
 
 @keyframes rotate {
@@ -310,6 +317,10 @@ body.overlay_active {
 
 .dragon {
     background: #6F35FC;
+}
+
+.stellar {
+    background: rgb(252, 252, 14);
 }
 
 .dark {

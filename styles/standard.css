@@ -10,6 +10,31 @@
     color: rgb(255, 255, 255);
 }
 
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/raleway-v34-latin-regular.woff2') format('woff2');
+}
+
+html::-webkit-scrollbar {
+    width: 12px;
+}
+
+html::-webkit-scrollbar-track {
+    background: rgb(31, 41, 31);
+}
+
+html::-webkit-scrollbar-thumb {
+    background: rgb(228, 31, 37);
+    border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background: rgb(195, 26, 32);
+}
+
 .min_height_of_website {
     min-height: calc(100vh - 112px - 120px);
     height: 100%;
@@ -18,7 +43,7 @@
     justify-content: flex-start;
 }
 
-.m_auto {
+.centering {
     margin: 0 auto;
 }
 
@@ -98,6 +123,7 @@ a:hover {
 .text_input_field {
     color: rgb(0, 0, 0);
     border: unset;
+    outline: none;
     border-radius: 12px;
     padding: 2px 8px;
 }
@@ -148,6 +174,11 @@ form {
 .center_flex-start {
     justify-content: center;
     align-items: flex-start;
+}
+
+.center_flex-end {
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .flex-end_center {

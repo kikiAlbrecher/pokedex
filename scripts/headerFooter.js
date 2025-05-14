@@ -4,17 +4,29 @@
  * If the file is not found, an error message will be displayed in the element.
  */
 async function includeHTML() {
-    let includeElements = document.querySelectorAll('[w3-include-html]');
-    for (let i = 0; i < includeElements.length; i++) {
-        const element = includeElements[i];
-        let file = element.getAttribute("w3-include-html");
-        let resp = await fetch(file);
-        if (resp.ok) {
-            element.innerHTML = await resp.text();
-        } else {
-            element.innerHTML = 'Page not found';
+    return new Promise((resolve) => {
+        var z, i, elmnt, file, xhttp;
+        z = document.getElementsByTagName("*");
+        for (i = 0; i < z.length; i++) {
+            elmnt = z[i];
+            file = elmnt.getAttribute("w3-include-html");
+            if (file) {
+                xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        if (this.status == 200) { elmnt.innerHTML = this.responseText; }
+                        if (this.status == 404) { elmnt.innerHTML = "Page not found."; }
+                        elmnt.removeAttribute("w3-include-html");
+                        includeHTML().then(resolve); // rekursiv, bis fertig
+                    }
+                };
+                xhttp.open("GET", file, true);
+                xhttp.send();
+                return;
+            }
         }
-    }
+        resolve();
+    });
 }
 
 /**

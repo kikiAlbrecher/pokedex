@@ -5,19 +5,14 @@ const LIMIT_URL = "?limit=";
 let LIMIT = 20;
 let OFFSET = 0;
 let currentPokemons = [];
-let evolutionChains = [];
-let filteredPokemons = [];
-let allFilteredPokemons = [];
 let i = 0;
-const filterRestriction = 10;
-let displayedFilteredPokemonIndex = filterRestriction;
 
 /**
  * Initializes the application by fetching Pokémon data and evolution chains.
  */
-function init() {
+async function init() {
+  await includeHTML();
   getPokemons();
-  getEvoChains();
 }
 
 /**
@@ -29,8 +24,9 @@ async function getPokemons() {
   try {
     const responseAsJson = await fetchPokemonsData();
     for (let index = 0; index < responseAsJson.results.length; index++) {
-      const pokeDetails = await fetchPokemonDetails(responseAsJson.results[index].url);
-      processPokemonDetails(pokeDetails);
+      let pokeDetails = await fetchPokemonDetails(responseAsJson.results[index].url);
+      let processedPoke = await processPokemonDetails(pokeDetails);
+      currentPokemons.push(processedPoke);
     }
     renderPokemons();
   } catch (e) {
@@ -68,10 +64,10 @@ async function fetchPokemonDetails(url) {
  * 
  * @param {Object} pokeDetails - The details of the Pokémon to process.
  */
-function processPokemonDetails(pokeDetails) {
+async function processPokemonDetails(pokeDetails) {
   let pokeName = pokeDetails.name;
   let pokeId = pokeDetails.id;
-  let pokeImg = pokeDetails.sprites.other.dream_world.front_default;
+  let pokeImg = pokeDetails.sprites.other.dream_world.front_default || pokeDetails.sprites.front_default || '';
   let pokeType = pokeDetails.types.map(typeInfo => typeInfo.type.name).join(' ');
   let pokeHeight = pokeDetails.height;
   let pokeWeight = pokeDetails.weight;
@@ -79,8 +75,11 @@ function processPokemonDetails(pokeDetails) {
   let abilities = pokeDetails.abilities.map(ableTo => ableTo.ability.name).join(', ');
   let moves = pokeDetails.moves.slice(0, 3).map(firstMoves => firstMoves.move.name).join(', ');
   let pokeStats = pokeDetails.stats;
+  let evolution = await getEvoChains(pokeDetails);
 
-  pushPokeToArr(pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats);
+  return {
+    pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats, evolution
+  };
 }
 
 /**
@@ -90,32 +89,44 @@ function processPokemonDetails(pokeDetails) {
  */
 function handleError(e) {
   let errorMessageRef = document.getElementById('error_message');
+  let morePokemonsBtnRef = document.getElementById('button_regulation');
 
   document.getElementById('error_message').classList.remove('d_none');
   errorMessageRef.innerHTML = getErrorMessage(e);
   currentPokemons = [];
-  document.getElementById('button_regulation').classList.add('d_none');
+  morePokemonsBtnRef.classList.add('d_none');
 }
 
-/**
- * Fetches evolution chains data from the API and processes the details.
- */
-async function getEvoChains() {
+async function getEvoChains(pokeDetails) {
   try {
-    let response = await fetch(BASE_URL + EVOLUTION_URL + LIMIT_URL + LIMIT + "&offset=" + OFFSET);
-    let responseAsJson2 = await response.json();
-    for (let index = 0; index < responseAsJson2.results.length; index++) {
-      const evoUrl = responseAsJson2.results[index].url;
-      let evoResponse = await fetch(evoUrl);
-      let evoDetails = await evoResponse.json();
-      let evoChainStarter = evoDetails.chain.species.name;
-      let evoTo1 = evoDetails.chain.evolves_to.map(evo1 => evo1.species.name).join(' ');
-      let evoTo2 = evoDetails.chain.evolves_to.map(evo2 => evo2.evolves_to.map(evo2details => evo2details.species.name).join(' ')).join(' ');
-      pushEvoToArr(evoChainStarter, evoTo1, evoTo2);
-    }
+    let speciesData = await fetch(pokeDetails.species.url).then(res => res.json());
+    if (!speciesData.evolution_chain?.url) return null;
+
+    let evoDetails = await fetch(speciesData.evolution_chain.url).then(res => res.json());
+    let evoChainStarter = evoDetails.chain.species.name;
+    let evoChainStarterImg = await getImageFromName(evoChainStarter);
+    let evoTo1 = evoDetails.chain.evolves_to[0]?.species?.name;
+    let evoTo1Img = evoTo1 ? await getImageFromName(evoTo1) : null;
+    let evoTo2 = evoDetails.chain.evolves_to[0]?.evolves_to[0]?.species?.name;
+    let evoTo2Img = evoTo2 ? await getImageFromName(evoTo2) : null;
+
+    return { evoChainStarter, evoChainStarterImg, evoTo1, evoTo1Img, evoTo2, evoTo2Img };
   } catch (e) {
-    return ``;
+    return null;
   }
+}
+
+async function getImageFromName(name) {
+  let data = await fetch(BASE_URL + POKE_URL + '/' + name).then(res => res.json());
+
+  return data.sprites.other?.dream_world?.front_default ||
+    data.sprites.other?.['official-artwork']?.front_default ||
+    data.sprites.front_default ||
+    '';
+}
+
+function sanitizeImageUrl(url) {
+  return url || '';
 }
 
 /**
@@ -125,6 +136,7 @@ async function getEvoChains() {
  */
 function showLoadingSpinner(show) {
   const spinnerRef = document.getElementById('loading_spinner');
+
   if (show) {
     spinnerRef.classList.remove('d_none');
     document.getElementById('load_more_btn').classList.add('d_none');
@@ -134,114 +146,35 @@ function showLoadingSpinner(show) {
   }
 }
 
-/**
- * Pushes a Pokémon's data to the currentPokemons array.
- * 
- * @param {string} pokeName - The name of the Pokémon.
- * @param {number} pokeId - The ID of the Pokémon.
- * @param {string} pokeImg - The image URL of the Pokémon.
- * @param {string} pokeType - The types of the Pokémon.
- * @param {number} pokeHeight - The height of the Pokémon.
- * @param {number} pokeWeight - The weight of the Pokémon.
- * @param {number} baseExperience - The base experience of the Pokémon.
- * @param {string} abilities - The abilities of the Pokémon.
- * @param {string} moves - The first 3 moves of the Pokémon.
- * @param {Array} pokeStats - The stats of the Pokémon.
- */
-function pushPokeToArr(pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats) {
-  currentPokemons.push({ pokeName, pokeId, pokeImg, pokeType, pokeHeight, pokeWeight, baseExperience, abilities, moves, pokeStats });
-}
-
-/**
- * Pushes evolution chain details to the evolutionChains array.
- * 
- * @param {string} evoChainStarter - The starting Pokémon of the evolution chain.
- * @param {string} evoTo1 - The first evolution in the chain.
- * @param {string} evoTo2 - The second evolution in the chain.
- */
-function pushEvoToArr(evoChainStarter, evoTo1, evoTo2) {
-  evolutionChains.push({ evoChainStarter, evoTo1, evoTo2 });
-}
-
-/**
- * Renders the list of Pokémon to the webpage.
- */
 function renderPokemons() {
   let pokemonRef = document.getElementById('pokemon');
-  pokemonRef.innerHTML = "";
+  pokemonRef.innerHTML = '';
 
   currentPokemons.forEach((pokemon, i) => {
-    pokemonRef.innerHTML += getPokemonCardsTemplate(pokemon, i);
+    pokemonRef.innerHTML += getPokemonCardsTemplate(pokemon, i, 'current');
   });
   document.getElementById('load_more_btn').classList.remove('d_none');
 }
 
-/**
- * Toggles the visibility of a grey overlay when a Pokémon card is clicked.
- * 
- * @param {number} i - The index of the selected Pokémon.
- */
-function toggleGreyOverlay(i) {
+function toggleGreyOverlay(i, source = 'current') {
   let greyOverlayRef = document.getElementById('grey_overlay');
+  const pokemon = source === 'filtered' ? allFilteredPokemons[i] : currentPokemons[i];
+
+  if (!pokemon) return;
+
   greyOverlayRef.classList.toggle('d_none');
-  renderOverlay(i);
+  renderOverlay(i, source);
   handleScrollbar();
 }
 
 /**
- * Retrieves the currently selected Pokémon based on the index.
- * 
- * @param {number} i - The index of the selected Pokémon.
- * @returns {number} The index of the selected Pokémon in the list.
+ * Handles the visibility of the scrollbar when the grey overlay is active.
  */
-function getSelectedPokemon(i) {
-  let selectedPokemon = null;
+function handleScrollbar() {
+  let greyOverlayRef = document.getElementById('grey_overlay');
 
-  if (allFilteredPokemons.length !== 0) {
-    selectedPokemon = allFilteredPokemons[i];
-    let currentPokemonIndex = currentPokemons.findIndex(pokemon => pokemon.pokeId === selectedPokemon.pokeId);
-
-    if (currentPokemonIndex !== -1) {
-      i = currentPokemonIndex;
-    }
-  }
-  return i;
-}
-
-/**
- * Updates the Pokémon overlay with the selected Pokémon's details.
- * 
- * @param {number} i - The index of the selected Pokémon.
- */
-function updatePokemonOverlay(i) {
-  let pokemonOverlayRef = document.getElementById('pokemon_overlay');
-  pokemonOverlayRef.innerHTML = '';
-
-  pokemonOverlayRef.innerHTML = getPokemonOverlay(i);
-
-  if (allFilteredPokemons.length !== 0) {
-    changeOverlayLayout();
-  }
-}
-
-/**
- * Renders the overlay for a selected Pokémon.
- * 
- * @param {number} i - The index of the selected Pokémon.
- */
-function renderOverlay(i) {
-  i = getSelectedPokemon(i);
-  updatePokemonOverlay(i);
-}
-
-/**
- * Changes the layout of the overlay by adjusting certain UI elements.
- */
-function changeOverlayLayout() {
-  document.getElementById('previous_poke').classList.add('d_none');
-  document.getElementById('next_poke').classList.add('d_none');
-  document.getElementById('sequence_attributes').classList.remove('space-between_center');
-  document.getElementById('sequence_attributes').classList.add('center_center');
+  greyOverlayRef.classList.contains('d_none') ?
+    document.body.classList.remove('overlay_active') : document.body.classList.add('overlay_active');
 }
 
 /**
@@ -250,7 +183,8 @@ function changeOverlayLayout() {
  * @param {Event} event - The event triggered by the overlay button click.
  */
 function addOverlay(event) {
-  let overlayRef = document.getElementById('pokemon_overlay');
+  const overlayRef = document.getElementById('pokemon_overlay');
+
   overlayRef.classList.remove('d_none');
   event.stopPropagation();
 }
@@ -261,19 +195,11 @@ function addOverlay(event) {
  * @param {Event} event - The event triggered by clicking outside the overlay.
  */
 function removeGreyOverlay(event) {
-  let greyOverlayRef = document.getElementById('grey_overlay');
+  const greyOverlayRef = document.getElementById('grey_overlay');
+
   greyOverlayRef.classList.add('d_none');
   event.stopPropagation();
   handleScrollbar();
-}
-
-/**
- * Handles the visibility of the scrollbar when the grey overlay is active.
- */
-function handleScrollbar() {
-  let greyOverlayRef = document.getElementById('grey_overlay');
-  greyOverlayRef.classList.contains('d_none') ?
-    document.body.classList.remove('overlay_active') : document.body.classList.add('overlay_active');
 }
 
 /**
@@ -293,58 +219,18 @@ function switchTab(event, tabName) {
   document.getElementById(tabName).classList.add('active');
 }
 
-/**
- * Navigates to the previous Pokémon in the overlay.
- * 
- * @param {number} i - The index of the current Pokémon.
- */
-function onePokeBack(i) {
-  let x = (i - 1);
-  if (i > 0) {
-    renderOverlay(x);
-  } else {
-    x = currentPokemons.length - 1;
-    renderOverlay(x);
-  }
+function onePokeBack(i, source = 'current') {
+  let list = source === 'filtered' ? allFilteredPokemons : currentPokemons;
+  let newIndex = i > 0 ? i - 1 : list.length - 1;
+
+  renderOverlay(newIndex, source);
 }
 
-/**
- * Navigates to the next Pokémon in the overlay.
- * 
- * @param {number} i - The index of the current Pokémon.
- */
-function onePokeForward(i) {
-  let y = (i + 1);
-  if (i < currentPokemons.length - 1) {
-    renderOverlay(y);
-  } else {
-    y = 0;
-    renderOverlay(y);
-  }
-}
+function onePokeForward(i, source = 'current') {
+  let list = source === 'filtered' ? allFilteredPokemons : currentPokemons;
+  let newIndex = i < list.length - 1 ? i + 1 : 0;
 
-/**
- * Retrieves the image URL of a Pokémon by name.
- * 
- * @param {string} pokeName - The name of the Pokémon.
- * @returns {string} The image URL of the Pokémon.
- */
-function getPokemonImage(pokeName) {
-  let pokemon = currentPokemons.find(poke => normalizePokemonName(poke.pokeName) === normalizePokemonName(pokeName));
-  return pokemon ? pokemon.pokeImg : ``;
-}
-
-/**
- * Normalizes the Pokémon name by converting it to lowercase and removing extra spaces.
- * 
- * @param {string} pokeName - The name of the Pokémon.
- * @returns {string} The normalized Pokémon name.
- */
-function normalizePokemonName(pokeName) {
-  if (pokeName) {
-    return pokeName.split(' ')[0].toLowerCase();
-  }
-  return ``;
+  renderOverlay(newIndex, source);
 }
 
 /**
@@ -354,7 +240,6 @@ function loadMorePokes() {
   showLoadingSpinner(true);
   OFFSET += LIMIT;
   getPokemons();
-  getEvoChains();
 }
 
 /**
@@ -364,5 +249,6 @@ function loadMorePokes() {
  */
 function toggleLoadMoreButton(show) {
   const loadMoreButton = document.getElementById('load_more_btn');
+
   show ? loadMoreButton.classList.add('d_none') : loadMoreButton.classList.remove('d_none');
 }
