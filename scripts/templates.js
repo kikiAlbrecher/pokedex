@@ -11,12 +11,16 @@ function getErrorMessage() {
 }
 
 /**
- * Generates a Pokémon card template with information about the Pokémon.
- * The template includes the Pokémon's ID, name, image, and types.
- * 
+ * Generates an HTML template string for a Pokémon card.
+ *
  * @param {Object} pokemon - The Pokémon data object.
- * @param {number} i - The index of the Pokémon.
- * @returns {string} The HTML template string for the Pokémon card.
+ * @param {number} pokemon.pokeId - The unique ID of the Pokémon.
+ * @param {string} pokemon.pokeName - The name of the Pokémon.
+ * @param {string} pokemon.pokeImg - The URL of the Pokémon's image.
+ * @param {string} [pokemon.pokeType] - A space-separated string of the Pokémon's types (e.g., "fire flying").
+ * @param {number} i - The index of the Pokémon in a list, used for DOM interaction.
+ * @param {string} [source='current'] - The source identifier used in event handling.
+ * @returns {string} A string of HTML representing the Pokémon card.
  */
 function getPokemonCardsTemplate(pokemon, i, source = 'current') {
     let typeCollection = (pokemon.pokeType || '').split(' ');
@@ -64,7 +68,7 @@ function getMoreResultsTemplate() {
 }
 
 /**
- * Returns a template for when no Pokémon are found in the search.
+ * Returns a template for when no Pokémons are found in the search.
  * 
  * @returns {string} The HTML template string for the "no Pokémon found" message.
  */
@@ -75,11 +79,11 @@ function getNoFoundTemplate() {
 }
 
 /**
- * Generates the overlay template for a specific Pokémon.
- * This template includes the Pokémon's stats, abilities, moves, and evolutionary chain (if available).
- * 
- * @param {number} i - The index of the Pokémon in the currentPokemons array.
- * @returns {string} The HTML template string for the Pokémon overlay.
+ * Generates a detailed overlay HTML template for a selected Pokémon, including main info (weight, height, abilities, moves), stats, and evolution chain.
+ *
+ * @param {number} i - Index of the Pokémon in the corresponding list (filtered or current).
+ * @param {string} [source='current'] - Source list identifier. Can be 'filtered' or 'current' to determine which list to use.
+ * @returns {string} HTML template for the Pokémon overlay view, or a fallback template if the Pokémon is not found.
  */
 function getPokemonOverlay(i, source = 'current') {
     const list = source === 'filtered' ? allFilteredPokemons : currentPokemons;
@@ -120,13 +124,13 @@ function getPokemonOverlay(i, source = 'current') {
 
             <div class="tabs_container">
                 <div class="tabs_header display_flex_row space-around_center">
-                    <button class="tab_button" onclick="switchTab(event, 'main')"><h3>main</h3></button>
+                    <button class="tab_button active" onclick="switchTab(event, 'main')"><h3>main</h3></button>
                     <button class="tab_button" onclick="switchTab(event, 'stats')"><h3>stats</h3></button>
-                    <button class="tab_button active" onclick="switchTab(event, 'evo')"><h3>evo chain</h3></button>
+                    <button class="tab_button" onclick="switchTab(event, 'evo')"><h3>evo chain</h3></button>
                 </div>
         
                 <div class="tab_content">
-                    <div id="main" class="tab_panel">
+                    <div id="main" class="tab_panel active">
                         <h3 class="h3_variant">Main Info</h3>
                         <div class="display_flex_column">
                             <div class="main_infos display_flex_row">
@@ -214,17 +218,17 @@ function getPokemonOverlay(i, source = 'current') {
                             </div>
                         </div>
                         <div class="stats_values display_flex_row">
-                            <h5 class="headline_width">Base value: ${pokemon.pokeStats[0].base_stat + pokemon.pokeStats[1].base_stat + pokemon.pokeStats[2].base_stat + pokemon.pokeStats[3].base_stat + pokemon.pokeStats[4].base_stat + pokemon.pokeStats[5].base_stat}</h5>
+                            <h5 class="headline_width font_weight_600">Base value: ${pokemon.pokeStats[0].base_stat + pokemon.pokeStats[1].base_stat + pokemon.pokeStats[2].base_stat + pokemon.pokeStats[3].base_stat + pokemon.pokeStats[4].base_stat + pokemon.pokeStats[5].base_stat}</h5>
                             <div class="stats_representation display_flex_row center_center">
-                                <span>0</span>
+                                <span class="font_weight_600">0</span>
                                 <div class="progress_bar_container">
                                     <div class="progress_bar" style="width: ${((pokemon.pokeStats[0].base_stat + pokemon.pokeStats[1].base_stat + pokemon.pokeStats[2].base_stat + pokemon.pokeStats[3].base_stat + pokemon.pokeStats[4].base_stat + pokemon.pokeStats[5].base_stat) / 993) * 100}%;"></div>
                                 </div>
-                                <span>993</span>
+                                <span class="font_weight_600">993</span>
                             </div>
                         </div>
                     </div>
-                    <div id="evo" class="tab_panel active">
+                    <div id="evo" class="tab_panel">
                         <h3 class="h3_variant">Evo Chain</h3>
                         <div class="display_flex_column">
                             <div class="evo_chain_images display_flex_row space-around_center">

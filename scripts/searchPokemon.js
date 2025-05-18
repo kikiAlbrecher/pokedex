@@ -4,6 +4,10 @@ let allFilteredPokemons = [];
 const filterRestriction = 10;
 let displayedFilteredPokemonIndex = filterRestriction;
 
+/**
+ * Fetches the complete list of all Pokémon from the API.
+ * Data is paginated, and all pages are requested in sequence.
+ */
 async function fetchAllPokemonsData() {
     const totalPokemons = 1302;
     const LIMIT_ALL = 100;
@@ -17,6 +21,10 @@ async function fetchAllPokemonsData() {
     }
 }
 
+/**
+ * Triggers a Pokémon search based on user input.
+ * Initiates data fetch and filtering when the input length is 3 characters or more.
+ */
 async function searchPokemon() {
     let searchTerm = getSearchTerm();
     const morePokemonsBtnRef = document.getElementById('button_regulation');
@@ -34,22 +42,45 @@ async function searchPokemon() {
     } else searchTermTooShort();
 }
 
+/**
+ * Attempts to fetch and render Pokémon that match the search term.
+ *
+ * @param {string} searchTerm - The search input entered by the user.
+ */
 async function tryFilteredDetails(searchTerm) {
     const filteredDetails = await filterPokemonsBySearchTerm(searchTerm);
 
     (!filteredDetails || filteredDetails.length === 0) ? renderFilteredPokemons([]) : renderFilteredPokemons(filteredDetails);
 }
 
+/**
+ * Gets the search input value based on screen width (mobile or desktop).
+ *
+ * @returns {string} The user-entered search term.
+ */
 function getSearchTerm() {
     return window.innerWidth > 820 ? document.getElementById('search_input_desktop').value : document.getElementById('search_input_mobile').value;
 }
 
+/**
+ * Filters the full Pokémon list for names matching the search term (case-insensitive).
+ *
+ * @param {string} searchTerm - The term to search for in Pokémon names.
+ * @returns {Promise<Array>} A list of processed matching Pokémon.
+ */
 async function filterPokemonsBySearchTerm(searchTerm) {
     let searchTermLow = searchTerm.toLowerCase();
+
     filteredPokemons = allPokemons.filter(pokemon => pokemon.name.toLowerCase().includes(searchTermLow));
     return await getFilteredPokemonsDetails(filteredPokemons);
 }
 
+/**
+ * Fetches and processes the details for each filtered Pokémon.
+ *
+ * @param {Array} filteredPokemons - A list of Pokémon objects filtered by name.
+ * @returns {Promise<Array>} A promise that resolves to a list of detailed Pokémon objects.
+ */
 async function getFilteredPokemonsDetails(filteredPokemons) {
     let filteredDetails = [];
     await spinnerAdd();
@@ -69,6 +100,9 @@ async function getFilteredPokemonsDetails(filteredPokemons) {
     }
 }
 
+/**
+ * Adds a spinner overlay and delays briefly to improve perceived loading UX.
+ */
 async function spinnerAdd() {
     spinnerRef = document.getElementById('loading_spinner');
 
@@ -77,6 +111,12 @@ async function spinnerAdd() {
     await new Promise(resolve => setTimeout(resolve, 50));
 }
 
+/**
+ * Renders the list of filtered Pokémon to the DOM.
+ * Displays a fallback message if no Pokémon are found.
+ *
+ * @param {Array} filteredDetails - An array of processed filtered Pokémon.
+ */
 function renderFilteredPokemons(filteredDetails) {
     let filteredPokemonsRef = document.getElementById('pokemon');
     filteredPokemonsRef.innerHTML = '';
@@ -96,6 +136,10 @@ function renderFilteredPokemons(filteredDetails) {
     }
 }
 
+/**
+ * Handles the scenario when the search term is too short to evoke the searching process.
+ * Resets state and re-renders default Pokémons.
+ */
 function searchTermTooShort() {
     const morePokemonsBtnRef = document.getElementById('button_regulation');
 
@@ -107,6 +151,10 @@ function searchTermTooShort() {
     morePokemonsBtnRef.classList.remove('d_none');
 }
 
+/**
+ * Shows additional filtered Pokémon results when the user requests more.
+ * Appends new Pokémon cards to the end of the current list and handles end-of-results logic.
+ */
 function showMoreFilteredPokemons() {
     const nextChargeOfFilteredPokemons = allFilteredPokemons.slice(displayedFilteredPokemonIndex, displayedFilteredPokemonIndex + filterRestriction);
     const filteredPokemonsRef = document.getElementById('pokemon');
@@ -122,6 +170,9 @@ function showMoreFilteredPokemons() {
     if (displayedFilteredPokemonIndex >= allFilteredPokemons.length) noMoreSearchResults();
 }
 
+/**
+ * Hides the 'show more results' button and its text when no further search results are available.
+ */
 function noMoreSearchResults() {
     const moreResultsBtn = document.getElementById('show_more_search_results');
     const moreResultsText = document.getElementById('more_results_infotext');
@@ -132,17 +183,19 @@ function noMoreSearchResults() {
 
 /**
  * Renders the overlay for a selected Pokémon.
- * 
- * @param {number} i - The index of the selected Pokémon.
+ *
+ * @param {number} i - The index of the Pokémon to display.
+ * @param {string} [source='current'] - The source list of the Pokémon ('current' or 'filtered').
  */
 function renderOverlay(i, source = 'current') {
     updatePokemonOverlay(i, source);
 }
 
 /**
- * Updates the Pokémon overlay with the selected Pokémon's details.
- * 
- * @param {number} i - The index of the selected Pokémon.
+ * Updates the Pokémon overlay with detailed information about the selected Pokémon.
+ *
+ * @param {number} i - The index of the Pokémon in the source array.
+ * @param {string} [source='current'] - The data source to use ('current' or 'filtered').
  */
 function updatePokemonOverlay(i, source = 'current') {
     const overlay = document.getElementById('pokemon_overlay');

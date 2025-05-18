@@ -11,11 +11,11 @@
 }
 
 @font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 300;
-  src: url('../assets/fonts/raleway-v34-latin-regular.woff2') format('woff2');
+    font-display: swap;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../assets/fonts/raleway-v34-latin-regular.woff2') format('woff2');
 }
 
 html::-webkit-scrollbar {
