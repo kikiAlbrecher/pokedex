@@ -44,6 +44,7 @@ async function getPokemons() {
 async function fetchPokemonsData() {
   let response = await fetch(BASE_URL + POKE_URL + LIMIT_URL + LIMIT + "&offset=" + OFFSET);
   let responseAsJson = await response.json();
+
   return responseAsJson;
 }
 
@@ -56,6 +57,7 @@ async function fetchPokemonsData() {
 async function fetchPokemonDetails(url) {
   let detailResponse = await fetch(url);
   let pokeDetails = await detailResponse.json();
+
   return pokeDetails;
 }
 
@@ -92,7 +94,7 @@ function handleError(e) {
   let errorMessageRef = document.getElementById('error_message');
   let morePokemonsBtnRef = document.getElementById('button_regulation');
 
-  document.getElementById('error_message').classList.remove('d_none');
+  errorMessageRef.classList.remove('d_none');
   errorMessageRef.innerHTML = getErrorMessage(e);
   currentPokemons = [];
   morePokemonsBtnRef.classList.add('d_none');
