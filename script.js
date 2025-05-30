@@ -70,7 +70,8 @@ async function fetchPokemonDetails(url) {
 async function processPokemonDetails(pokeDetails) {
   let pokeName = pokeDetails.name;
   let pokeId = pokeDetails.id;
-  let pokeImg = pokeDetails.sprites.other.dream_world.front_default || pokeDetails.sprites.front_default || '';
+  let pokeImg = pokeDetails.sprites.other.dream_world.front_default ||
+    pokeDetails.sprites.other?.['official-artwork']?.front_default || pokeDetails.sprites.front_default || '';
   let pokeType = pokeDetails.types.map(typeInfo => typeInfo.type.name).join(' ');
   let pokeHeight = pokeDetails.height;
   let pokeWeight = pokeDetails.weight;
@@ -134,10 +135,8 @@ async function getEvoChains(pokeDetails) {
 async function getImageFromName(name) {
   let data = await fetch(BASE_URL + POKE_URL + '/' + name).then(res => res.json());
 
-  return data.sprites.other?.dream_world?.front_default ||
-    data.sprites.other?.['official-artwork']?.front_default ||
-    data.sprites.front_default ||
-    '';
+  return data.sprites.other.dream_world.front_default || data.sprites.other?.['official-artwork']?.front_default ||
+    data.sprites.front_default || '';
 }
 
 /**
